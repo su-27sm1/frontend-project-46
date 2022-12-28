@@ -5,9 +5,10 @@ import path from 'path';
 const getDiff = (obj1, obj2) => {
   const keys1 = _.keys(obj1);
   const keys2 = _.keys(obj2);
-  const keys = _.union(keys1, keys2).sort();
+  const keys = _.union(keys1, keys2);
+  const sortedKeys = _.sortBy(keys);
 
-  const result = keys
+  const result = sortedKeys
     .reduce((acc, key) => {
       const minusKey = `- ${key}`;
       const plusKey = `+ ${key}`;
