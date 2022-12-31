@@ -10,10 +10,8 @@ const getFixturePath = (filename) =>
   // eslint-disable-next-line implicit-arrow-linebreak
   path.join(__dirname, '..', '__fixtures__', filename);
 
-const first = 'file1.json';
-const second = 'file2.json';
-const file1 = getFixturePath(first);
-const file2 = getFixturePath(second);
+const file1 = getFixturePath('file1.json');
+const file2 = getFixturePath('file2.json');
 const expected = `{
 - follow: false
   host: hexlet.io
