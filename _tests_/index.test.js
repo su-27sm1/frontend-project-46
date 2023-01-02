@@ -12,6 +12,11 @@ const getFixturePath = (filename) =>
 
 const file1 = getFixturePath('file1.json');
 const file2 = getFixturePath('file2.json');
+const file3 = getFixturePath('file1.yaml');
+const file4 = getFixturePath('file2.yaml');
+const file5 = getFixturePath('file1.yml');
+const file6 = getFixturePath('file2.yml');
+
 const expected = `{
 - follow: false
   host: hexlet.io
@@ -23,4 +28,7 @@ const expected = `{
 
 test('difference test', () => {
   expect(genDiff(file1, file2)).toEqual(expected);
+  expect(genDiff(file3, file4)).toEqual(expected);
+  expect(genDiff(file5, file6)).toEqual(expected);
+  expect(genDiff(file1, file6)).toEqual(expected);
 });
