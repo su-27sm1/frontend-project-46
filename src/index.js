@@ -1,6 +1,6 @@
-import fs from 'fs';
+import { resolve, extname } from 'path';
 import _ from 'lodash';
-import path, { extname } from 'path';
+import fs from 'fs';
 import parsers from './parsers.js';
 
 const getDiff = (obj1, obj2) => {
@@ -32,15 +32,9 @@ const getDiff = (obj1, obj2) => {
   return `{\n${result}\n}`;
 };
 
-const getAbsolutePath = (fileName) => path.resolve(process.cwd(), fileName);
+const getAbsolutePath = (fileName) => resolve(process.cwd(), fileName);
 
 const getFormat = (filepath) => extname(filepath).slice(1);
-
-// const file1 = parsers(readFile1, getFormat(filepath1));
-// const file2 = parsers(readFile2, getFormat(filepath2));
-
-// const readFile1 = readFile(filepath1);
-// const readFile2 = readFile(filepath2);
 
 export default (fileName1, fileName2) => {
   const path1 = getAbsolutePath(fileName1);
