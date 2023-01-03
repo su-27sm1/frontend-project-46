@@ -1,36 +1,7 @@
 import { resolve, extname } from 'path';
-import _ from 'lodash';
 import fs from 'fs';
 import parsers from './parsers.js';
-
-const getDiff = (obj1, obj2) => {
-  const keys1 = _.keys(obj1);
-  const keys2 = _.keys(obj2);
-  const keys = _.union(keys1, keys2);
-  const sortedKeys = _.sortBy(keys);
-
-  const result = sortedKeys
-    .reduce((acc, key) => {
-      const minusKey = `- ${key}`;
-      const plusKey = `+ ${key}`;
-      const matchedValueKeys = ` ${key}`;
-
-      if (!_.has(obj2, key)) {
-        acc.push(`${minusKey}: ${obj1[key]}`);
-      } else if (!_.has(obj1, key)) {
-        acc.push(`${plusKey}: ${obj2[key]}`);
-      } else if (obj1[key] !== obj2[key]) {
-        acc.push(`${minusKey}: ${obj1[key]}\n${plusKey}: ${obj2[key]}`);
-      } else {
-        acc.push(` ${matchedValueKeys}: ${obj2[key]}`);
-      }
-
-      return acc;
-    }, [])
-    .join('\n');
-
-  return `{\n${result}\n}`;
-};
+import buildTree from './buildTree.js';
 
 const getAbsolutePath = (fileName) => resolve(process.cwd(), fileName);
 
@@ -45,5 +16,5 @@ export default (fileName1, fileName2) => {
   const data2 = fs.readFileSync(path2, 'utf8');
   const parsedData2 = parsers(data2, getFormat(fileName2));
 
-  return getDiff(parsedData1, parsedData2);
+  return buildTree(parsedData1, parsedData2);
 };
