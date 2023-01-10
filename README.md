@@ -19,3 +19,9 @@
 #### <center>`Difference between json, yaml, yml files in stylish format`</center>
 
 [![asciicast](https://asciinema.org/a/glzACuG3ms7QyQktdHDlDSkFf.svg)](https://asciinema.org/a/glzACuG3ms7QyQktdHDlDSkFf)
+
+---
+
+#### <center>`Difference between json, yaml, yml files in plain format`</center>
+
+[![asciicast](https://asciinema.org/a/CndVwNrmLEql9Jwmba9ZBRRnf.svg)](https://asciinema.org/a/CndVwNrmLEql9Jwmba9ZBRRnf)
