@@ -25,3 +25,12 @@
 #### <center>`Difference between json, yaml, yml files in plain format`</center>
 
 [![asciicast](https://asciinema.org/a/CndVwNrmLEql9Jwmba9ZBRRnf.svg)](https://asciinema.org/a/CndVwNrmLEql9Jwmba9ZBRRnf)
+
+---
+
+#### <center>`Difference between json, yaml, yml files in json format`</center>
+
+[![asciicast](https://asciinema.org/a/8CwwJgcgisxJWnFPO4xWleHAS.svg)](https://asciinema.org/a/8CwwJgcgisxJWnFPO4xWleHAS)
+
+ <center>Minimun system requirements:</center>
+ <center>• MacOS/Linux • Windows + WSL • node.js v16.0.0 •</center>
