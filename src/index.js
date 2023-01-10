@@ -2,7 +2,7 @@ import path from 'path';
 import fs from 'fs';
 import parsers from './parsers.js';
 import buildTree from './buildTree.js';
-import makeFormat from './formatters/indexFormatter.js';
+import makeFormat from './formatters/index.js';
 
 const getAbsolutePath = (fileName) => path.resolve(process.cwd(), fileName);
 
