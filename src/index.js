@@ -6,7 +6,7 @@ import makeFormat from './formatters/index.js';
 
 const getAbsolutePath = (fileName) => path.resolve(process.cwd(), fileName);
 
-const getFormat = (filepath) => path.extname(filepath).slice(1);
+export const getFormat = (filepath) => path.extname(filepath).slice(1);
 
 export default (fileName1, fileName2, format = 'stylish') => {
   const path1 = getAbsolutePath(fileName1);
