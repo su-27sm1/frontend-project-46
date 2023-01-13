@@ -37,7 +37,7 @@ test('Plain test', () => {
   expect(genDiff(file1, file6, 'plain')).toEqual(expected2);
 });
 
-const expected3 = fs.readFileSync(getFixturePath('result_json.json'), 'utf8');
+const expected3 = fs.readFileSync(getFixturePath('result_json.txt'), 'utf8');
 
 test('Json test', () => {
   expect(genDiff(file1, file2, 'json')).toEqual(expected3);
