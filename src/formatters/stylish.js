@@ -1,40 +1,61 @@
-/* eslint-disable function-paren-newline */
 /* eslint-disable comma-dangle */
 /* eslint-disable implicit-arrow-linebreak */
 import _ from 'lodash';
 
-const space = ' ';
-const spaceQuantity = 2;
-const stringify = (diff, indent, makeHandler, depth) => {
-  const [key, val] = diff;
-  switch (val.difference) {
-    case 'changed':
-      return `${indent}- ${key}: ${makeHandler(
-        val.value1,
-        depth + 2
-      )}\n${indent}+ ${key}: ${makeHandler(val.value2, depth + 2)}`;
-    case 'added':
-      return `${indent}+ ${key}: ${makeHandler(val.value, depth + 2)}`;
-    case 'deleted':
-      return `${indent}- ${key}: ${makeHandler(val.value, depth + 2)}`;
-    default:
-      return `${indent}  ${key}: ${makeHandler(val.value || val, depth + 2)}`;
+const signIndent = (depth, spacesCount = 2) =>
+  '  '.repeat(spacesCount * depth).slice(2);
+
+const indent = (depth, spacesCount = 2) => '  '.repeat(spacesCount * depth);
+
+const stringify = (value, treeDepth) => {
+  if (!_.isPlainObject(value)) {
+    return String(value);
   }
+
+  const fromObjToArray = Object.entries(value);
+  const lines = fromObjToArray.map(
+    ([key, val]) =>
+      `${indent(treeDepth + 1)}${key}: ${stringify(val, treeDepth + 1)}`
+  );
+
+  return ['{', ...lines, `${indent(treeDepth)}}`].join('\n');
 };
 
-export default (value) => {
-  const iter = (iterValue, depth) => {
-    if (!_.isObject(iterValue)) return `${iterValue}`;
-
-    const indentSize = depth * spaceQuantity;
-    const currentIndent = space.repeat(indentSize);
-    const bracketIndent = space.repeat(indentSize - spaceQuantity);
-
-    const lines = Object.entries(iterValue).map((data) =>
-      stringify(data, currentIndent, iter, depth)
-    );
-    return ['{', ...lines, `${bracketIndent}}`].join('\n');
+export default (diff) => {
+  const symbol = {
+    add: '+',
+    absence: '-',
+    space: ' ',
   };
 
-  return iter(value, 1);
+  const iter = (tree, depth) =>
+    tree.map((item) => {
+      const getValue = (_value, sign) =>
+        `${signIndent(depth)}${sign} ${item.key}: ${stringify(
+          _value,
+          depth
+        )}\n`;
+      switch (item.type) {
+        case 'nested':
+          return `${indent(depth)}${item.key}: {\n${iter(
+            item.children,
+            depth + 1
+          ).join('')}${indent(depth)}}\n`;
+        case 'added':
+          return getValue(item.val, symbol.add);
+        case 'deleted':
+          return getValue(item.val, symbol.absence);
+        case 'unchanged':
+          return getValue(item.val, symbol.space);
+        case 'changed':
+          return `${getValue(item.val1, symbol.absence)}${getValue(
+            item.val2,
+            symbol.add
+          )}`;
+        default:
+          return `Error: Unsupported type: ${item.type}`;
+      }
+    });
+
+  return `{\n${iter(diff, 1).join('')}}`;
 };

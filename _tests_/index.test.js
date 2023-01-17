@@ -1,3 +1,4 @@
+/* eslint-disable comma-dangle */
 /* eslint-disable quote-props */
 /* eslint-disable no-undef */
 import path, { dirname } from 'path';
@@ -12,36 +13,30 @@ const getFixturePath = (filename) =>
   // eslint-disable-next-line implicit-arrow-linebreak
   path.join(__dirname, '..', '__fixtures__', filename);
 
-const file1 = getFixturePath('file1.json');
-const file2 = getFixturePath('file2.json');
-const file3 = getFixturePath('file1.yaml');
-const file4 = getFixturePath('file2.yaml');
-const file5 = getFixturePath('file1.yml');
-const file6 = getFixturePath('file2.yml');
+const extensions = [
+  ['json', 'json', 'stylish', 'result_stylish.txt'],
+  ['yaml', 'yaml', 'stylish', 'result_stylish.txt'],
+  ['yml', 'yml', 'stylish', 'result_stylish.txt'],
+  ['json', 'yml', 'stylish', 'result_stylish.txt'],
 
-const expected1 = fs.readFileSync(getFixturePath('result_stylish.txt'), 'utf8');
+  ['json', 'json', 'plain', 'result_plain.txt'],
+  ['yaml', 'yaml', 'plain', 'result_plain.txt'],
+  ['yml', 'yml', 'plain', 'result_plain.txt'],
+  ['json', 'yml', 'plain', 'result_plain.txt'],
 
-test('Stylish test', () => {
-  expect(genDiff(file1, file2)).toEqual(expected1);
-  expect(genDiff(file3, file4)).toEqual(expected1);
-  expect(genDiff(file5, file6)).toEqual(expected1);
-  expect(genDiff(file1, file6)).toEqual(expected1);
-});
+  ['json', 'json', 'json', 'result_json.txt'],
+  ['yaml', 'yaml', 'json', 'result_json.txt'],
+  ['yml', 'yml', 'json', 'result_json.txt'],
+  ['json', 'yml', 'json', 'result_json.txt'],
+];
 
-const expected2 = fs.readFileSync(getFixturePath('result_plain.txt'), 'utf8');
+test.each(extensions)(
+  'Extensions and format(%s, %s, %s)',
+  (file1Extension, file2Extension, format, resultFile) => {
+    const fileAfter = getFixturePath(`file1.${file1Extension}`);
+    const fileBefore = getFixturePath(`file2.${file2Extension}`);
+    const result = fs.readFileSync(getFixturePath(resultFile), 'utf8');
 
-test('Plain test', () => {
-  expect(genDiff(file1, file2, 'plain')).toEqual(expected2);
-  expect(genDiff(file3, file4, 'plain')).toEqual(expected2);
-  expect(genDiff(file5, file6, 'plain')).toEqual(expected2);
-  expect(genDiff(file1, file6, 'plain')).toEqual(expected2);
-});
-
-const expected3 = fs.readFileSync(getFixturePath('result_json.txt'), 'utf8');
-
-test('Json test', () => {
-  expect(genDiff(file1, file2, 'json')).toEqual(expected3);
-  expect(genDiff(file3, file4, 'json')).toEqual(expected3);
-  expect(genDiff(file5, file6, 'json')).toEqual(expected3);
-  expect(genDiff(file1, file6, 'json')).toEqual(expected3);
-});
+    expect(genDiff(fileAfter, fileBefore, format)).toEqual(result);
+  }
+);

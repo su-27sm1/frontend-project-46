@@ -1,5 +1,3 @@
-/* eslint-disable implicit-arrow-linebreak */
-/* eslint-disable indent */
 /* eslint-disable comma-dangle */
 import _ from 'lodash';
 
@@ -7,30 +5,40 @@ const stringify = (value) => {
   if (_.isObject(value)) {
     return '[complex value]';
   }
-  return _.isString(value) ? `'${value}'` : value;
+  if (typeof value === 'string') {
+    return `'${value}'`;
+  }
+  return String(value);
 };
 
 export default (diff) => {
-  const iter = (iterDiff, space = '') =>
-    Object.entries(iterDiff)
-      .flatMap(([key, val]) => {
-        if (val.difference === 'nested') {
-          return iter(val.value, `${space}${key}.`);
-        }
-        if (val.difference === 'added') {
-          return `Property '${space}${key}' was added with value: ${stringify(
-            val.value
+  const iter = (node, key = '') => {
+    const result = node.flatMap((item) => {
+      const ancestors = [...key, item.key];
+
+      switch (item.type) {
+        case 'nested':
+          return iter(item.children, ancestors);
+        case 'added':
+          return `Property '${ancestors.join(
+            '.'
+          )}' was added with value: ${stringify(item.val)}`;
+        case 'deleted':
+          return `Property '${ancestors.join('.')}' was removed`;
+        case 'unchanged':
+          return null;
+        case 'changed':
+          return `Property '${ancestors.join(
+            '.'
+          )}' was updated. From ${stringify(item.val1)} to ${stringify(
+            item.val2
           )}`;
-        }
-        if (val.difference === 'deleted') {
-          return `Property '${space}${key}' was removed`;
-        }
-        return val.difference === 'changed'
-          ? `Property '${space}${key}' was updated. From ${stringify(
-              val.value1
-            )} to ${stringify(val.value2)}`
-          : [];
-      })
-      .join('\n');
-  return iter(diff);
+        default:
+          return `Unknown type ${item.type}`;
+      }
+    });
+
+    return result.filter((item) => item !== null).join('\n');
+  };
+  return iter(diff, []);
 };
