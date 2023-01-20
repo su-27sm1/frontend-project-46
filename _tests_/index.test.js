@@ -1,3 +1,5 @@
+/* eslint-disable function-paren-newline */
+/* eslint-disable implicit-arrow-linebreak */
 /* eslint-disable comma-dangle */
 /* eslint-disable quote-props */
 /* eslint-disable no-undef */
@@ -8,35 +10,22 @@ import genDiff from '../src/index.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-
 const getFixturePath = (filename) =>
-  // eslint-disable-next-line implicit-arrow-linebreak
   path.join(__dirname, '..', '__fixtures__', filename);
+const readFile = (filename) =>
+  fs.readFileSync(getFixturePath(filename), 'utf8');
 
-const extensions = [
-  ['json', 'json', 'stylish', 'result_stylish.txt'],
-  ['yaml', 'yaml', 'stylish', 'result_stylish.txt'],
-  ['yml', 'yml', 'stylish', 'result_stylish.txt'],
-  ['json', 'yml', 'stylish', 'result_stylish.txt'],
+const extensions = ['yml', 'json', 'yaml'];
+const resultStylish = readFile('result_stylish.txt');
+const resultPlain = readFile('result_plain.txt');
+const resultJson = readFile('result_json.txt');
 
-  ['json', 'json', 'plain', 'result_plain.txt'],
-  ['yaml', 'yaml', 'plain', 'result_plain.txt'],
-  ['yml', 'yml', 'plain', 'result_plain.txt'],
-  ['json', 'yml', 'plain', 'result_plain.txt'],
+test.each(extensions)('.add(%s)', (extension) => {
+  const fileBefore = getFixturePath(`file1.${extension}`);
+  const fileAfter = getFixturePath(`file2.${extension}`);
 
-  ['json', 'json', 'json', 'result_json.txt'],
-  ['yaml', 'yaml', 'json', 'result_json.txt'],
-  ['yml', 'yml', 'json', 'result_json.txt'],
-  ['json', 'yml', 'json', 'result_json.txt'],
-];
-
-test.each(extensions)(
-  'Extensions and format(%s, %s, %s)',
-  (file1Extension, file2Extension, format, resultFile) => {
-    const fileAfter = getFixturePath(`file1.${file1Extension}`);
-    const fileBefore = getFixturePath(`file2.${file2Extension}`);
-    const result = fs.readFileSync(getFixturePath(resultFile), 'utf8');
-
-    expect(genDiff(fileAfter, fileBefore, format)).toEqual(result);
-  }
-);
+  expect(genDiff(fileBefore, fileAfter)).toBe(resultStylish);
+  expect(genDiff(fileBefore, fileAfter, 'stylish')).toBe(resultStylish);
+  expect(genDiff(fileBefore, fileAfter, 'plain')).toBe(resultPlain);
+  expect(genDiff(fileBefore, fileAfter, 'json')).toBe(resultJson);
+});

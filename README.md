@@ -56,6 +56,6 @@ for running: gendiff -f json path/to/file path/to/file
 
 ---
 
-## <center>Minimun system requirements:</center>
+## <h3 align="center">Minimun system requirements:</h3>
 
- <center>• MacOS/Linux • Windows + WSL • node.js v16.0.0 •</center>
+ <h3 align="center">• MacOS/Linux • Windows + WSL • node.js v16.0.0 •</h3>
